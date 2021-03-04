@@ -1,10 +1,36 @@
 ﻿using System;
+using Bookstore.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 namespace Bookstore.Components
 {
-    public class NavigationMenuViewComponent
+    public class NavigationMenuViewComponent : ViewComponent
     {
-        public NavigationMenuViewComponent()
+
+        private IBookstoreRepository repository;
+
+        public NavigationMenuViewComponent (IBookstoreRepository r)
         {
+            repository = r;
         }
+
+
+
+
+        public IViewComponentResult Invoke()
+        {
+            ViewBag.SelectedCategory = RouteData?.Values["category"];
+
+
+
+            return View(repository.Books
+                .Select(x => x.Category)
+                .Distinct()
+                .OrderBy(x => x));
+        }
+
     }
 }
